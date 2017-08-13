@@ -15,38 +15,44 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillText('Список результатов:', 120, 60);
 
   // найдем самый большой результат для расчета высоты гистограмм
-  var max = -1;
+  function getMaxResult() {
+    var max = -1;
 
-  for (var i = 0; i < times.length; i++) {
-    var time = times[i];
-    if (time > max) {
-      max = time;
+    for (var i = 0; i < times.length; i++) {
+      var time = times[i];
+      if (time > max) {
+        max = time;
+      }
+    }
+    return max;
+  }
+
+  function buildHistogram() {
+    var histogramHeight = 150;
+    var columnWidth = 40;
+    var columnIndentX = 50;
+    var textIndentY = 3;
+    var initialX = 120;
+    var initialY = 100;
+    var max = getMaxResult();
+
+    // гистограмма
+    for (var i = 0; i < times.length; i++) {
+
+      // цвет столбиков
+      ctx.fillStyle = names[i] === 'Вы' ?
+        'rgba(255, 0, 0, 1)' :
+        'rgba(0, 0, 255,' + (Math.random() + 0.1).toFixed(1) + ')';
+
+      ctx.fillRect(initialX + columnIndentX * i, initialY + (max * histogramHeight / max - times[i] * histogramHeight / max), columnWidth, times[i] * histogramHeight / max);
+      ctx.fillStyle = '#000';
+
+      // текст
+      ctx.textBaseline = 'top';
+      ctx.fillText(names[i], initialX + columnIndentX * i, initialY + histogramHeight + textIndentY);
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(times[i].toFixed(0), initialX + columnIndentX * i, initialY - textIndentY);
     }
   }
-
-  // переменные
-  var histogramHeight = 150;
-  var columnWidth = 40;
-  var columnIndentX = 50;
-  var textIndentY = 3;
-  var initialX = 120;
-  var initialY = 100;
-
-  // гистограмма
-  for (var i = 0; i < times.length; i++) {
-
-    // цвет столбиков
-    ctx.fillStyle = names[i] === 'Вы' ?
-      'rgba(255, 0, 0, 1)' :
-      'rgba(0, 0, 255,' + (Math.random() + 0.1).toFixed(1) + ')';
-
-    ctx.fillRect(initialX + columnIndentX * i, initialY + (max * histogramHeight / max - times[i] * histogramHeight / max), columnWidth, times[i] * histogramHeight / max);
-    ctx.fillStyle = '#000';
-
-    // текст
-    ctx.textBaseline = 'top';
-    ctx.fillText(names[i], initialX + columnIndentX * i, initialY + histogramHeight + textIndentY);
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(times[i].toFixed(0), initialX + columnIndentX * i, initialY - textIndentY);
-  }
+  buildHistogram();
 };
