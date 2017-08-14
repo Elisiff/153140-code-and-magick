@@ -35,6 +35,7 @@ window.renderStatistics = function (ctx, names, times) {
     var initialX = 120;
     var initialY = 100;
     var max = getMaxResult();
+    var step = histogramHeight / max;
 
     // гистограмма
     for (var i = 0; i < times.length; i++) {
@@ -44,14 +45,17 @@ window.renderStatistics = function (ctx, names, times) {
         'rgba(255, 0, 0, 1)' :
         'rgba(0, 0, 255,' + (Math.random() + 0.1).toFixed(1) + ')';
 
-      ctx.fillRect(initialX + columnIndentX * i, initialY + (max * histogramHeight / max - times[i] * histogramHeight / max), columnWidth, times[i] * histogramHeight / max);
+      ctx.fillRect(initialX + (columnIndentX + columnWidth) * i,
+          initialY + (max * step - times[i] * step), columnWidth, times[i] * step);
       ctx.fillStyle = '#000';
 
       // текст
       ctx.textBaseline = 'top';
-      ctx.fillText(names[i], initialX + columnIndentX * i, initialY + histogramHeight + textIndentY);
+      ctx.fillText(names[i], initialX + (columnIndentX + columnWidth) * i,
+          initialY + histogramHeight + textIndentY);
       ctx.textBaseline = 'bottom';
-      ctx.fillText(times[i].toFixed(0), initialX + columnIndentX * i, initialY - textIndentY);
+      ctx.fillText(times[i].toFixed(0), initialX + (columnIndentX + columnWidth) * i,
+          initialY - textIndentY);
     }
   }
   buildHistogram();
